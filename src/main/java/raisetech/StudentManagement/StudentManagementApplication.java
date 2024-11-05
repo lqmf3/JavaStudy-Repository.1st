@@ -18,6 +18,6 @@ public class StudentManagementApplication {
 	public String animal(){
 		return "Hello, Animal!";
 	}
-	System.out.println("こんばんは");
+
 
 }
