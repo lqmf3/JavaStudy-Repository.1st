@@ -1,45 +1,57 @@
 package raisetech.StudentManagement;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
 public class StudentManagementApplication {
 
-	private String name1 = "Shirai";
-	private String name2 = "Aoki";
-	private String age1 = "35";
-	private String age2 = "20";
+	@Autowired
+	private  StudentRepository repository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(StudentManagementApplication.class, args);
 	}
 
-	@GetMapping("/studentInfo")
-	public String getStudentInfo() {
-		return name1 + " " + age1 + "歳" + "," + name2 + " " + age2 + "歳";
+	@GetMapping("/student")
+	public String getStudent(@RequestParam("name")String name) {
+		Student student = repository.searchByName(name);
+		return student.getName() + " " + student.getAge() + "歳";
 	}
 
-	@PostMapping("/studentInfo")
-	public void setStudentInfo(String name1, String age1, String name2, String age2){
-		this.name1 = name1;
-		this.age1 = age1;
-		this.name2 = name2;
-		this.age2 = age2;
+	@PostMapping("/student")
+	public void registerStudent(String name, int age){
+		repository.registerStudent(name, age);
+
 	}
-	@PostMapping("/studentName")
-	public void upStudentName(String name1){
-		this.name1 = name1;
+	@PatchMapping("/student")
+	public void upStudentName(String name, int age){
+		repository.updateStudent(name, age);
 	}
-	@PostMapping("/studentAge")
-	public void upStudentAge(String age2){
-		this.age2 = age2;
+	@DeleteMapping("/student")
+	public void deleteStudent(String name){
+		repository.deleteStudent(name);
+	}
+	@GetMapping("/students")
+	public String getAllStudents(){
+		List<Student> students = repository.findAll();
+		return students.stream()
+				.map(student -> student.getName() + "," + student.getAge() + "歳")
+				.collect(Collectors.joining("},{", "{", "}"));
 	}
 }
