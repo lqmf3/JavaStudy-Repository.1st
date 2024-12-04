@@ -12,6 +12,10 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+configurations {
+	compileOnly{
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -22,6 +26,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	//便利機能、ユーティリティ　Apache commons-lang
 	implementation 'org.apache.commons:commons-lang3:3.17.0'
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
     //MySQLドライバ
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	//MyBatis
@@ -34,4 +42,5 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
 }
