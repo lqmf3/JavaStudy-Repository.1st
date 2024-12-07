@@ -11,5 +11,5 @@ public class StudentsCourses {
   private String studentId;
   private String courseName;
   private String startDate;
-  private String enDate;
+  private String endDate;
 }
