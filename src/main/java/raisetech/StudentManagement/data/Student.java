@@ -1,4 +1,4 @@
-package raisetech.StudentManagement;
+package raisetech.StudentManagement.data;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +14,6 @@ public class Student {
   private String region;
   private int age;
   private String gender;
-}
+  }
+
 
