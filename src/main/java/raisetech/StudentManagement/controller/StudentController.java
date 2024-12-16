@@ -1,9 +1,13 @@
 package raisetech.StudentManagement.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import raisetech.StudentManagement.Domain.StudentDetail;
+import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentsCourses;
 import raisetech.StudentManagement.service.StudentService;
@@ -12,28 +16,27 @@ import raisetech.StudentManagement.service.StudentService;
 public class StudentController {
 
   private StudentService service;
+  private StudentConverter converter;
 
   @Autowired
-  public StudentController(StudentService service) {
+  public StudentController(StudentService service, StudentConverter converter) {
+
     this.service = service;
+    this.converter = converter;
   }
 
   @GetMapping("/studentList")
-  public List<Student> getStudentList() {
-    return service.searchStudentList();
+  public List<StudentDetail> getStudentList() {
+    List<Student> students = service.searchStudentList();
+    List<StudentsCourses> studentsCourses = service.searchStudentsCoursesList();
+
+    return converter.convertStudentDetails(students, studentsCourses);
   }
 
-  @GetMapping("/30yearOldStudentList")
-  public  List<Student> get30yearOldStudentList(){
-    return service.search30yearOldStudents();
-  }
 
-  @GetMapping("/studentsCoursesList")
-  public List<StudentsCourses> getStudentsCoursesList() {
-    return service.searchStudentsCoursesList();
-  }
-  @GetMapping("/AdvancedJavaProgrammingCourses")
-  public List<StudentsCourses> getCourseName() {
-    return service.searchAdvancedJavaProgrammingCourses();
+
+  private static List<StudentDetail> getStudentDetails(List<StudentDetail> studentDetails) {
+    return studentDetails;
   }
 }
+
