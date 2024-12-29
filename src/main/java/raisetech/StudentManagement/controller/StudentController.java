@@ -63,6 +63,7 @@ public class StudentController {
       result.rejectValue("studentsCourses", "error.studentsCourses", "コース情報を入力してください。");
       return "registerStudent";
       }
+    System.out.println(studentDetail.getStudent().getName() +"さんが新規受講生として登録されました");
 
       return "redirect:/studentList";
     }
