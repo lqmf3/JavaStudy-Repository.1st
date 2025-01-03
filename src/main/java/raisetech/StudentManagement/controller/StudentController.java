@@ -56,15 +56,10 @@ public class StudentController {
     if (result.hasErrors()) {
       return "registerStudent";
     }
-    //　新規受講生情報を登録する処理を実装する。
-    //　コース情報も一緒に実装できるように実装する。コースは単体で良い。
+    service.registerStudent(studentDetail);
 
-    if (studentDetail.getStudentsCourses() == null || studentDetail.getStudentsCourses().isEmpty()) {
-      result.rejectValue("studentsCourses", "error.studentsCourses", "コース情報を入力してください。");
-      return "registerStudent";
-      }
-    System.out.println(studentDetail.getStudent().getName() +"さんが新規受講生として登録されました");
-
-      return "redirect:/studentList";
-    }
+    System.out.println(
+        studentDetail.getStudent().getName() + "さんが新規受講生として登録されました");
+    return "redirect:/studentList";
   }
+}
