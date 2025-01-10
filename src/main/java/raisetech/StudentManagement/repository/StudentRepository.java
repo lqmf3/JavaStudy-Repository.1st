@@ -31,8 +31,8 @@ public interface StudentRepository {
   // データベースに学生を挿入する処理
   @Insert("INSERT INTO students (name, nickname, email, region, age, gender, remark) " +
       "VALUES (#{name}, #{nickname}, #{email}, #{region}, #{age}, #{gender}, #{remark})")
-  void saveStudent(Student student);
+  void insertStudent(Student student);
 
   @Insert("INSERT INTO students_courses (student_id, course_name) VALUES (#{studentId}, #{courseName})")
-  void saveStudentCourse(@Param("studentId") String studentId, @Param("courseName") String courseName);
+  void insertStudentCourse(@Param("studentId") String studentId, @Param("courseName") String courseName);
 }

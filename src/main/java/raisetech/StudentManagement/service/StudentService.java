@@ -32,11 +32,11 @@ public class StudentService {
   @Transactional
   public void registerStudent(StudentDetail studentDetail) {
     // 学生情報を保存
-    repository.saveStudent(studentDetail.getStudent());
+    repository.insertStudent(studentDetail.getStudent());
 
     // 各コース情報を保存
     for (StudentsCourses course : studentDetail.getStudentsCourses()) {
-      repository.saveStudentCourse(studentDetail.getStudent().getId(), course.getCourseName());
+      repository.insertStudentCourse(studentDetail.getStudent().getId(), course.getCourseName());
     }
   }
 }
