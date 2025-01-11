@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentsCourses;
 import raisetech.StudentManagement.repository.StudentRepository;
@@ -23,14 +25,18 @@ public class StudentService {
     return repository.search();
   }
 
-  public List<Student> search30yearOldStudents() {
-    return repository.search().stream().filter(student -> student.getAge() >= 30 && student.getAge() <= 39).toList();
-  }
-
   public List<StudentsCourses> searchStudentsCoursesList() {
     return repository.findAllStudentsCourses();
   }
-  public List<StudentsCourses> searchAdvancedJavaProgrammingCourses() {
-    return repository.findAllStudentsCourses().stream().filter(course -> "Advanced Java Programming".equals(course.getCourseName())).toList();
+
+  @Transactional
+  public void registerStudent(StudentDetail studentDetail) {
+    // 学生情報を保存
+    repository.insertStudent(studentDetail.getStudent());
+
+    // 各コース情報を保存
+    for (StudentsCourses course : studentDetail.getStudentsCourses()) {
+      repository.insertStudentCourse(studentDetail.getStudent().getId(), course.getCourseName());
+    }
   }
 }
