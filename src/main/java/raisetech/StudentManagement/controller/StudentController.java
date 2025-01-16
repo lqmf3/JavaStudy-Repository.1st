@@ -20,9 +20,12 @@ import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentsCourses;
 import raisetech.StudentManagement.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class StudentController {
+  private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
   private StudentService service;
   private StudentConverter converter;
@@ -63,8 +66,7 @@ public class StudentController {
     }
     service.registerStudent(studentDetail);
 
-    System.out.println(
-        studentDetail.getStudent().getName() + "さんが新規受講生として登録されました");
+    logger.info(studentDetail.getStudent().getName() + "さんが新規受講生として登録されました");
     return "redirect:/studentList";
   }
   //受講生詳細表示
@@ -90,7 +92,7 @@ public class StudentController {
     }
     service.updateStudent(studentDetail);
 
-    System.out.println(studentDetail.getStudent().getName() + "さんの受講生情報が更新されました");
+    logger.info(studentDetail.getStudent().getName() + "さんの受講生情報が更新されました");
     return "redirect:/studentList";
   }
 }
