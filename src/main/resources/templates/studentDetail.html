@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>受講生詳細</title>
+</head>
+<body>
+<h1>受講生詳細情報</h1>
+<div>
+  <p><strong>名前:</strong> <span th:text="${studentDetail.student.name}"></span></p>
+  <p><strong>ニックネーム:</strong> <span th:text="${studentDetail.student.nickname}"></span></p>
+  <p><strong>Email:</strong> <span th:text="${studentDetail.student.email}"></span></p>
+  <p><strong>住所:</strong> <span th:text="${studentDetail.student.region}"></span></p>
+  <p><strong>年齢:</strong> <span th:text="${studentDetail.student.age}"></span></p>
+  <p><strong>性別:</strong> <span th:text="${studentDetail.student.gender}"></span></p>
+  <p><strong>備考:</strong> <span th:text="${studentDetail.student.remark}"></span></p>
+</div>
+
+<h2>受講コース</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>コース名</th>
+    <th>開始日</th>
+    <th>終了日</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="course : ${studentDetail.studentsCourses}">
+    <td th:text="${course.courseName}"></td>
+    <td th:text="${course.startDate}"></td>
+    <td th:text="${course.endDate}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<a href="/studentList">戻る</a>
+</body>
+</html>
