@@ -88,9 +88,16 @@ public class StudentController {
   @PostMapping("/updateStudent")
   public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
     if (result.hasErrors()) {
+//      model.addAttribute("studentDetail", studentDetail);
       return "updateStudent";
     }
-    service.updateStudent(studentDetail);
+
+    //論理削除の処理
+    if (studentDetail.isDeleted()){
+      service.updateStudent(studentDetail);
+    }else {
+      service.updateStudent(studentDetail);
+    }
 
     logger.info(studentDetail.getStudent().getName() + "さんの受講生情報が更新されました");
     return "redirect:/studentList";

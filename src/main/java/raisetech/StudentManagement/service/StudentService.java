@@ -23,7 +23,7 @@ public class StudentService {
   }
 
   public List<Student> searchStudentList() {
-    return repository.search();
+    return repository.searchActiveStudents();//論理削除されていないデータのみ取得
   }
 
   public List<StudentsCourses> searchStudentsCoursesList() {
@@ -54,8 +54,17 @@ public class StudentService {
   }
 
   public void updateStudent(StudentDetail studentDetail) {
-    repository.updateStudent(studentDetail.getStudent());
-    for (StudentsCourses course : studentDetail.getStudentsCourses()) {
+    Student student = studentDetail.getStudent();
+    //受講生がキャンセルされた場合
+    if (student.isDeleted()) {
+      repository.markStudentAsDeleted(student.getId());
+    }else {
+      repository.updateStudent(student);
+    }
+
+    // 関連するコース情報も更新する
+    List<StudentsCourses> courses = studentDetail.getStudentsCourses();
+    for (StudentsCourses course : courses) {
       repository.updateStudentCourses(course);
     }
   }
