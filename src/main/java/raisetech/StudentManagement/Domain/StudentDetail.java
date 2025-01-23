@@ -13,4 +13,11 @@ public class StudentDetail {
 
   private Student student;
   private List<StudentsCourses> studentsCourses;
+  private boolean isDeleted;
+
+  public void markAsDeleted() {
+    if (this.student != null) {
+      this.student.setDeleted(true);  // studentのisDeletedをtrueに設定
+    }
+  }
 }

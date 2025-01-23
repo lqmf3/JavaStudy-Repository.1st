@@ -25,8 +25,8 @@ public interface StudentRepository {
    *
    * @return 全権検索した受講生情報の一覧
    */
-  @Select("SELECT * FROM students")
-  List<Student> search();
+  @Select("SELECT * FROM students WHERE is_deleted = FALSE") // is_deleted = FALSE の受講生を取得
+  List<Student> searchActiveStudents();
 
   @Select("SELECT * FROM students_courses")
   List<StudentsCourses> findAllStudentsCourses();
@@ -49,11 +49,13 @@ public interface StudentRepository {
 
   @Update("UPDATE students " +
       "SET name = #{name}, nickname = #{nickname}, email = #{email}, region = #{region}, " +
-      "age = #{age}, gender = #{gender}, remark = #{remark} " + "WHERE id = #{id}")
+      "age = #{age}, gender = #{gender}, remark = #{remark} , is_deleted = #{isDeleted} " + "WHERE id = #{id}")
   void updateStudent(Student student);
 
   @Update("UPDATE students_courses " +
-      "SET course_name = #{courseName}, start_date = #{startDate}, end_date = #{endDate} " +
-      "WHERE id = #{id}")
+      "SET course_name = #{courseName} WHERE student_id = #{id}")
   void updateStudentCourses(StudentsCourses course);
+
+  @Update("UPDATE students SET is_deleted = TRUE WHERE id = #{id}")
+  void markStudentAsDeleted(@Param("id")int id);//論理削除処理
 }

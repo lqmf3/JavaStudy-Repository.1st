@@ -90,7 +90,13 @@ public class StudentController {
     if (result.hasErrors()) {
       return "updateStudent";
     }
-    service.updateStudent(studentDetail);
+
+    //論理削除の処理
+    if (studentDetail.isDeleted()) {
+      service.updateStudent(studentDetail);
+    } else {
+      service.updateStudent(studentDetail);
+    }
 
     logger.info(studentDetail.getStudent().getName() + "さんの受講生情報が更新されました");
     return "redirect:/studentList";

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Student {
 
-  private String id;
+  private int id;
   private String name;
   private String nickname;
   private String email;
@@ -16,6 +16,15 @@ public class Student {
   private String gender;
   private String remark;
   private boolean isDeleted;
+
+  public boolean isDeleted() {
+    return isDeleted;
   }
+
+  public void setDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
+  }
+}
+
 
 
