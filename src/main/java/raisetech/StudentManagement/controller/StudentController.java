@@ -88,14 +88,13 @@ public class StudentController {
   @PostMapping("/updateStudent")
   public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
     if (result.hasErrors()) {
-//      model.addAttribute("studentDetail", studentDetail);
       return "updateStudent";
     }
 
     //論理削除の処理
-    if (studentDetail.isDeleted()){
+    if (studentDetail.isDeleted()) {
       service.updateStudent(studentDetail);
-    }else {
+    } else {
       service.updateStudent(studentDetail);
     }
 
