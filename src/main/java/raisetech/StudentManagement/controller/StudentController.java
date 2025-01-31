@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.naming.Binding;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
@@ -23,7 +26,7 @@ import raisetech.StudentManagement.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Controller
+@RestController
 public class StudentController {
   private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
@@ -38,12 +41,10 @@ public class StudentController {
   }
 
   @GetMapping("/studentList")
-  public String getStudentList(Model model) {
+  public List<StudentDetail> getStudentList() {
     List<Student> students = service.searchStudentList();
     List<StudentsCourses> studentsCourses = service.searchStudentsCoursesList();
-
-    model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
-    return "studentList";
+    return converter.convertStudentDetails(students, studentsCourses);
   }
 
   @GetMapping("/studentsCourseList")
@@ -77,28 +78,10 @@ public class StudentController {
     return "studentDetail";
   }
 
-  // 受講生情報更新フォーム
-  @GetMapping("/updateStudent/{id}")
-  public String showUpdateStudentForm(@PathVariable int id, Model model) {
-    StudentDetail studentDetail = service.getStudentDetailById(id);
-    model.addAttribute("studentDetail", studentDetail);
-    return "updateStudent";
-  }
   //受講生更新処理
   @PostMapping("/updateStudent")
-  public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
-    if (result.hasErrors()) {
-      return "updateStudent";
-    }
-
-    //論理削除の処理
-    if (studentDetail.isDeleted()) {
-      service.updateStudent(studentDetail);
-    } else {
-      service.updateStudent(studentDetail);
-    }
-
-    logger.info(studentDetail.getStudent().getName() + "さんの受講生情報が更新されました");
-    return "redirect:/studentList";
+  public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
+    service.updateStudent(studentDetail);
+    return ResponseEntity.ok("更新処理が成功しました。");
   }
 }
