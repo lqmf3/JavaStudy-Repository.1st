@@ -26,57 +26,61 @@ import raisetech.StudentManagement.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * 受講生の登録や検索、更新などを行うREST APIとして受け付けるControllerです。
+ */
 @RestController
 public class StudentController {
   private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
   private StudentService service;
-  private StudentConverter converter;
+
 
   @Autowired
-  public StudentController(StudentService service, StudentConverter converter) {
+  public StudentController(StudentService service) {
 
     this.service = service;
-    this.converter = converter;
+
   }
 
+  /**
+   * 受講生一覧検索です
+   * 全件検索を行うので条件指定は行いません
+   * @return　受講生一覧（全件）
+   */
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList() {
-    List<Student> students = service.searchStudentList();
-    List<StudentsCourses> studentsCourses = service.searchStudentsCoursesList();
-    return converter.convertStudentDetails(students, studentsCourses);
+    return service.searchStudentList();
   }
 
-  @GetMapping("/studentsCourseList")
-  public  List<StudentsCourses> getStudentsCourseList(){
-    return service.searchStudentsCoursesList();
-  }
-
-  @GetMapping("/newStudent")
-  public String newStudent(Model model) {
-    StudentDetail studentDetail = new StudentDetail();
-    studentDetail.setStudentsCourses(Arrays.asList(new StudentsCourses()));
-    model.addAttribute("studentDetail", studentDetail);
-    return "registerStudent";
-  }
+//  @GetMapping("/studentsCourseList")
+//  public  List<StudentsCourses> getStudentsCourseList(){
+//    return service.searchStudentsCoursesList();
+//  }
 
   @PostMapping("/registerStudent")
-  public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
-    if (result.hasErrors()) {
-      return "registerStudent";
-    }
-    service.registerStudent(studentDetail);
+  public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
+    StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
+    return ResponseEntity.ok(responseStudentDetail);
+  }
 
-    logger.info(studentDetail.getStudent().getName() + "さんが新規受講生として登録されました");
-    return "redirect:/studentList";
+  /**
+   * 受講生検索です
+   * IDに紐づく任意の受講生の情報を取得します
+   * @param id　受講生ID
+   * @return　受講生
+   */
+  @GetMapping("/student/{id}")
+  public StudentDetail getStudent(@PathVariable int id) {
+    return service.getStudentDetailById(id);
   }
-  //受講生詳細表示
-  @GetMapping("/studentDetail/{id}")
-  public String getStudentDetail(@PathVariable int id, Model model) {
-    StudentDetail studentDetail = service.getStudentDetailById(id);
-    model.addAttribute("studentDetail", studentDetail);
-    return "studentDetail";
-  }
+
+//  // 受講生情報更新フォーム
+//  @GetMapping("/updateStudent/{id}")
+//  public StudentDetail showUpdateStudentForm(@PathVariable int id) {
+//    return service.getStudentDetailById(id);
+//  }
 
   //受講生更新処理
   @PostMapping("/updateStudent")
