@@ -54,11 +54,6 @@ public class StudentController {
     return service.searchStudentList();
   }
 
-//  @GetMapping("/studentsCourseList")
-//  public  List<StudentsCourses> getStudentsCourseList(){
-//    return service.searchStudentsCoursesList();
-//  }
-
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(@RequestBody StudentDetail studentDetail) {
     StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
@@ -75,12 +70,6 @@ public class StudentController {
   public StudentDetail getStudent(@PathVariable int id) {
     return service.getStudentDetailById(id);
   }
-
-//  // 受講生情報更新フォーム
-//  @GetMapping("/updateStudent/{id}")
-//  public StudentDetail showUpdateStudentForm(@PathVariable int id) {
-//    return service.getStudentDetailById(id);
-//  }
 
   //受講生更新処理
   @PostMapping("/updateStudent")
