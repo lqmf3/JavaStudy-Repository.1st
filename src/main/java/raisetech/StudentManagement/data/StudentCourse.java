@@ -5,12 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StudentsCourses {
+public class StudentCourse {
 
   private int id;
   private int studentId;
   private String courseName;
   private String startDate;
   private String endDate;
-//  private boolean cancel;
 }

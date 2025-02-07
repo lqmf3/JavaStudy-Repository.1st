@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import raisetech.StudentManagement.data.Student;
-import raisetech.StudentManagement.data.StudentsCourses;
+import raisetech.StudentManagement.data.StudentCourse;
 
 @Getter
 @Setter
@@ -17,12 +17,12 @@ import raisetech.StudentManagement.data.StudentsCourses;
 public class StudentDetail {
 
   private Student student;
-  private List<StudentsCourses> studentsCourses;
+  private List<StudentCourse> studentCourseList;
   private boolean isDeleted;
 
-  public StudentDetail(Student student, List<StudentsCourses> courses) {
+  public StudentDetail(Student student, List<StudentCourse> courses) {
     this.student = student;
-    this.studentsCourses = studentsCourses;
+    this.studentCourseList = courses;
     this.isDeleted = false;
   }
 
