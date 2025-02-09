@@ -98,19 +98,4 @@ public class StudentController {
   public ResponseEntity<String> handleTestException(TestException ex){
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
-
-//  @ExceptionHandler(IllegalArgumentException.class)
-//  public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-//  }
-//
-//  @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
-//  public ResponseEntity<String> handleJsonParseException(org.springframework.http.converter.HttpMessageNotReadableException ex) {
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("リクエストの形式が正しくありません。");
-//  }
-//
-//  @ExceptionHandler(Exception.class)
-//  public ResponseEntity<String> handleGeneralException(Exception ex) {
-//    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("サーバーエラーが発生しました。詳細: " + ex.getMessage());
-//  }
 }
