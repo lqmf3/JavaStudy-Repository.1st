@@ -1,14 +1,19 @@
 package raisetech.StudentManagement.data;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class Student {
-
+  @Min(value = 1, message = "IDは1以上でなければなりません。")
   private int id;
+
+  @NotBlank(message = "名前は必須です。")
   private String name;
+
   private String nickname;
   private String email;
   private String region;
