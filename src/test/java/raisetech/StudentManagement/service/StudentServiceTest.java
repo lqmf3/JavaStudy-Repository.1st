@@ -1,6 +1,7 @@
 package raisetech.StudentManagement.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,6 +78,8 @@ class StudentServiceTest {
     Student student = new Student();
     List<StudentCourse> studentCourseList = new ArrayList<>();
     StudentDetail studentDetail = new StudentDetail(student, studentCourseList);
+    doNothing().when(repository).registerStudent(student);
+    studentCourseList.forEach(studentCourse -> doNothing().when(repository).registerStudentCourse(studentCourse));
 
     sut.registerStudent(studentDetail);
 
@@ -96,6 +99,9 @@ class StudentServiceTest {
     Student student = new Student();
     List<StudentCourse> studentCourseList = new ArrayList<>();
     StudentDetail studentDetail = new StudentDetail(student, studentCourseList);
+
+    doNothing().when(repository).updateStudent(student);
+    studentCourseList.forEach(studentCourse -> doNothing().when(repository).updateStudentCourse(studentCourse));
 
     sut.updateStudent(studentDetail);
 
