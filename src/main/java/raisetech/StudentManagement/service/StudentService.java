@@ -34,8 +34,8 @@ public class StudentService {
    */
   public List<StudentDetail> searchStudentList() {
     List<Student> studentList = repository.searchActiveStudent();
-    List<StudentCourse> StudentCourseList = repository.findAllStudentCourse();
-    return converter.convertStudentDetails(studentList, StudentCourseList);
+    List<StudentCourse> studentCourseList = repository.findAllStudentCourse();
+    return converter.convertStudentDetails(studentList, studentCourseList);
   }
 
   /**
