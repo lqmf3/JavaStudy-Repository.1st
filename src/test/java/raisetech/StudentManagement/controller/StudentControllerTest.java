@@ -66,22 +66,6 @@ class StudentControllerTest {
     assertThat(violations.size()).isEqualTo(0);
   }
 
-//  @Test　@Min(1) のアノテーションでSpringが自動的にバリデーションエラーを返すため、必要なし
-//  void 受講生詳細の受講生でIDに数字以外を用いた時に入力チェックに掛かること(){
-//    Student student = new Student();
-//    student.setId(-1);
-//    student.setName("FukuzawaSaku");
-//    student.setNickname("Saku");
-//    student.setEmail("sakusaku@example.com");
-//    student.setRegion(null);
-//    student.setGender("Female");
-//    student.setRemark(" ");
-//    Set<ConstraintViolation<Student>> violations = validator.validate(student);
-//
-//    assertThat(violations.size()).isEqualTo(1);
-//    assertThat(violations).extracting("message").containsOnly("IDは1以上でなければなりません。");
-//  }
-
   @Test
   void 受講生IDを指定して受講生詳細が取得できること()throws Exception{
     Student student = new Student();
@@ -144,17 +128,6 @@ class StudentControllerTest {
 
     verify(service, times(1)).getStudentDetailById(999);
   }
-
-//  @Test
-//  void 無効なIDが指定された場合に400エラーが返ること() throws Exception {
-//    mockMvc.perform(get("/student/0"))
-//        .andExpect(status().isBadRequest())  // 400エラー
-//        .andExpect(content().string("IDは1以上でなければなりません。"));
-//
-//    mockMvc.perform(get("/student/-1"))
-//        .andExpect(status().isBadRequest())  // 400エラー
-//        .andExpect(content().string("IDは1以上でなければなりません。"));
-//  }
 
   @Test
   void 受講生詳細があり受講履歴が空であること() throws Exception {

@@ -97,11 +97,7 @@ public class StudentController {
   })
   @GetMapping("/student/{id}")
   public ResponseEntity<?> getStudent(@PathVariable @Min(1) @Max(999) int id) {
-//    if (id <= 0) {
-//      logger.warn("無効なIDが指定されました: {}", id);
-//      return ResponseEntity.badRequest().body("IDは1以上でなければなりません。");
-//      はここでidが1未満なら、Springが自動的にエラーを返してくれるので、この処理は不要
-//    }
+
     StudentDetail studentDetail = service.getStudentDetailById(id);
     if (studentDetail == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
