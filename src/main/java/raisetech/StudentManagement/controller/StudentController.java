@@ -58,8 +58,8 @@ public class StudentController {
    */
   @Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() throws TestException {
-    throw new TestException("現在このAPIは利用できません。URLは「studentList」ではなく「students」を利用してください。");
+  public List<StudentDetail> getStudentList() {
+    return service.searchStudentList();
   }
 
   /**
@@ -96,13 +96,18 @@ public class StudentController {
           description = "指定されたIDの受講生が見つからない場合")
   })
   @GetMapping("/student/{id}")
-  public ResponseEntity<StudentDetail> getStudent(@PathVariable @Min(1) @Max(999) int id) {
-    if (id <= 0) {
-      logger.warn("無効なIDが指定されました: {}", id);
-      throw new IllegalArgumentException("IDは1以上でなければなりません。");
-    }
+  public ResponseEntity<?> getStudent(@PathVariable @Min(1) @Max(999) int id) {
+//    if (id <= 0) {
+//      logger.warn("無効なIDが指定されました: {}", id);
+//      return ResponseEntity.badRequest().body("IDは1以上でなければなりません。");
+//      はここでidが1未満なら、Springが自動的にエラーを返してくれるので、この処理は不要
+//    }
     StudentDetail studentDetail = service.getStudentDetailById(id);
-    return ResponseEntity.ok(studentDetail);
+    if (studentDetail == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("指定したIDの受講生は見つかりませんでした。");  //404
+    }
+    return ResponseEntity.ok(studentDetail);  //200
   }
 
   /**
