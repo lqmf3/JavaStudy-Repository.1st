@@ -53,14 +53,8 @@ class StudentControllerTest {
 
   @Test
   void 受講生詳細の受講生で適切な値を入力した時に入力チェックに異常が発生しないこと(){
-    Student student = new Student();
-    student.setId(27);
-    student.setName("FukuzawaSaku");
-    student.setNickname("Saku");
-    student.setEmail("sakusaku@example.com");
-    student.setRegion(null);
-    student.setGender("Female");
-    student.setRemark(" ");
+    Student student = new Student(27,"FukuzawaSaku","Saku","sakusaku@example.com",null,28,"Famele", " ",false);
+
     Set<ConstraintViolation<Student>> violations = validator.validate(student);
 
     assertThat(violations.size()).isEqualTo(0);
@@ -68,22 +62,9 @@ class StudentControllerTest {
 
   @Test
   void 受講生IDを指定して受講生詳細が取得できること()throws Exception{
-    Student student = new Student();
-    student.setId(15);
-    student.setName("YamadaYuka");
-    student.setNickname("Yuka");
-    student.setEmail("y_yamada@example.com");
-    student.setRegion(null);
-    student.setAge(22);
-    student.setGender("Female");
-    student.setRemark(" ");
+    Student student = new Student(15,"YamadaYuka","Yuka","y_yamada@example.com",null,22,"Female"," ",false);
+    StudentCourse studentCourse = new StudentCourse(21,15," Web Development Basics","2025-02-01 17:47:43","2026-02-01");
 
-    StudentCourse studentCourse = new StudentCourse();
-    studentCourse.setStudentId(15);
-    studentCourse.setId(21);
-    studentCourse.setCourseName(" Web Development Basics");
-    studentCourse.setStartDate("2025-02-01 17:47:43");
-    studentCourse.setEndDate("2026-02-01");
     StudentDetail studentDetail = new StudentDetail(student, List.of(studentCourse));
 
     when(service.getStudentDetailById(15)).thenReturn(studentDetail);
@@ -91,29 +72,30 @@ class StudentControllerTest {
     mockMvc.perform(get("/student/15"))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(content().json("    {\n"
-            + "        \"student\": {\n"
-            + "            \"id\": 15,\n"
-            + "            \"name\": \"YamadaYuka\",\n"
-            + "            \"nickname\": \"Yuka\",\n"
-            + "            \"email\": \"y_yamada@example.com\",\n"
-            + "            \"region\": null,\n"
-            + "            \"age\": 22,\n"
-            + "            \"gender\": \"Female\",\n"
-            + "            \"remark\": \" \",\n"
-            + "            \"deleted\": false\n"
-            + "        },\n"
-            + "        \"studentCourseList\": [\n"
-            + "            {\n"
-            + "                \"id\": 21,\n"
-            + "                \"studentId\": 15,\n"
-            + "                \"courseName\": \" Web Development Basics\",\n"
-            + "                \"startDate\": \"2025-02-01 17:47:43\",\n"
-            + "                \"endDate\": \"2026-02-01\"\n"
-            + "            }\n"
-            + "        ],\n"
-            + "        \"deleted\": false\n"
-            + "    }"));
+        .andExpect(content().json("""
+            {
+                    "student": {
+                        "id": 15,
+                        "name": "YamadaYuka",
+                        "nickname": "Yuka",
+                        "email": "y_yamada@example.com",
+                        "region": null,
+                        "age": 22,
+                        "gender": "Female",
+                        "remark": " ",
+                        "deleted": false
+                    },
+                    "studentCourseList": [
+                        {
+                            "id": 21,
+                            "studentId": 15,
+                            "courseName": " Web Development Basics",
+                            "startDate": "2025-02-01 17:47:43",
+                            "endDate": "2026-02-01"
+                        }
+                    ],
+                    "deleted": false
+                }"""));
 
     verify(service, times(1)).getStudentDetailById(15);
   }
@@ -131,14 +113,7 @@ class StudentControllerTest {
 
   @Test
   void 受講生詳細があり受講履歴が空であること() throws Exception {
-    Student student = new Student();
-    student.setId(27);
-    student.setName("FukuzawaSaku");
-    student.setNickname("Saku");
-    student.setEmail("sakusaku@example.com");
-    student.setRegion("Shiga");
-    student.setGender("Female");
-    student.setRemark(" ");
+    Student student = new Student(27,"FukuzawaSaku","Saku","sakusaku@example.com",null,28,"Female", " ",false);
 
     StudentDetail studentDetail = new StudentDetail(student, List.of());  // 空のコースリスト
 
@@ -147,20 +122,22 @@ class StudentControllerTest {
     mockMvc.perform(get("/student/27"))
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json"))
-        .andExpect(content().json("{\n" +
-            "    \"student\": {\n" +
-            "        \"id\": 27,\n" +
-            "        \"name\": \"FukuzawaSaku\",\n" +
-            "        \"nickname\": \"Saku\",\n" +
-            "        \"email\": \"sakusaku@example.com\",\n" +
-            "        \"region\": \"Shiga\",\n" +
-            "        \"gender\": \"Female\",\n" +
-            "        \"remark\": \" \",\n" +
-            "        \"deleted\": false\n" +
-            "    },\n" +
-            "    \"studentCourseList\": [],\n" +
-            "    \"deleted\": false\n" +
-            "}"));
+        .andExpect(content().json("""
+            {
+                "student": {
+                    "id": 27,
+                    "name": "FukuzawaSaku",
+                    "nickname": "Saku",
+                    "email": "sakusaku@example.com",
+                    "region": null,
+                    "gender": "Female",
+                    "remark": " ",
+                    "deleted": false
+                },
+                "studentCourseList": [],
+                "deleted": false
+            }
+            """));
 
     verify(service, times(1)).getStudentDetailById(27);
   }
