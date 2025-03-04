@@ -54,7 +54,7 @@ class StudentServiceTest {
 
   @Test
   void 受講生詳細の登録_正しいIDに基づいてリポジトリのfindStudentByIdとfindCourseByStudentIdが呼び出せていること(){
-    int studentId = 1;
+    int studentId = 1; //999など明らかにテストとわかる数字が良いかも
     Student student = new Student();
     List<StudentCourse> courses = new ArrayList<>();
     when(repository.findStudentById(studentId)).thenReturn(student);
