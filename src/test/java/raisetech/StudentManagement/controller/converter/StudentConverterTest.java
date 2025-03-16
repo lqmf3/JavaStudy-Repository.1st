@@ -3,6 +3,7 @@ package raisetech.StudentManagement.controller.converter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,9 +25,12 @@ class StudentConverterTest {
     //モックの準備
     Student student1 =new Student(15,"AoyamaHaruka", "Haru", "Haruka@example.com", "Tokyo", 31, "Female", "GOOD", false);
     Student student2 =new Student(27, "FukuzawaSaku", "Saku", "saku@example.com", null, 28, "Female", "", false);
-    StudentCourse studentCourse1 = new StudentCourse(6, 15, "Introduction to SQL", "2024-01-15 00:00:00", "2024-03-15");
-    StudentCourse studentCourse2 = new StudentCourse(10, 15, "Machine Learning Basics", "2024-05-20 00:00:00", "2024-03-15");
-    StudentCourse studentCourse3 = new StudentCourse(22, 27, "Java Programming", "2025-03-01 10:00:00", "2024-08-20");
+
+    LocalDateTime now = LocalDateTime.now();
+    StudentCourse studentCourse1 = new StudentCourse(6, 15, "Introduction to SQL", now, now.plusMonths(2));
+    StudentCourse studentCourse2 = new StudentCourse(10, 15, "Machine Learning Basics", now.plusMonths(4), now.plusMonths(6));
+    StudentCourse studentCourse3 = new StudentCourse(22, 27, "Java Programming", now.plusMonths(14), now.plusMonths(16));
+
     List<Student> studentList = List.of(student1, student2);
     List<StudentCourse> studentCourseList = List.of(studentCourse1, studentCourse2, studentCourse3);
 
