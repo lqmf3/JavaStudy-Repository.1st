@@ -81,7 +81,7 @@ class StudentRepositoryTest {
   }
 
   @Test
-  void 受講生コース情報を更新が行えること(){
+  void 受講生コース情報の開始日を更新できること(){
     List<StudentCourse> courses = sut.findCourseByStudentId(1);
     StudentCourse studentCourse = courses.get(0);
 
@@ -96,7 +96,7 @@ class StudentRepositoryTest {
   }
 
   @Test
-  void 受講生コース情報のコース名を更新が行えること(){
+  void 受講生コース情報のコース名を更新できること(){
     List<StudentCourse> courses = sut.findCourseByStudentId(1);
     StudentCourse studentCourse = courses.get(0);
 
