@@ -125,9 +125,12 @@ class StudentServiceTest {
     assertEquals(student.getId(), studentCourse.getStudentId());
     //startDate が現在の日付に設定されていること
     assertNotNull(studentCourse.getStartDate());
-    assertTrue(studentCourse.getStartDate().startsWith(LocalDateTime.now().toLocalDate().toString()));
+    LocalDateTime expectedStartDate = LocalDateTime.now().toLocalDate().atStartOfDay();
+    assertTrue(studentCourse.getStartDate().toLocalDate().isEqual(expectedStartDate.toLocalDate()));
+
     //endDate が1年後の日付に設定されていること
     assertNotNull(studentCourse.getEndDate());
-    assertTrue(studentCourse.getEndDate().startsWith(LocalDateTime.now().plusYears(1).toLocalDate().toString()));
+    LocalDateTime expectedEndDate = LocalDateTime.now().plusYears(1).toLocalDate().atStartOfDay();
+    assertTrue(studentCourse.getEndDate().toLocalDate().isEqual(expectedEndDate.toLocalDate()));
   }
 }

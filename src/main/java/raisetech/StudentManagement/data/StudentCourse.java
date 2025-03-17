@@ -1,7 +1,7 @@
 package raisetech.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,10 +13,10 @@ public class StudentCourse {
   private int id;
   private int studentId;
   private String courseName;
-  private String startDate;
-  private String endDate;
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
 
-  public StudentCourse(int id, int studentId, String courseName, String startDate, String endDate) {
+  public StudentCourse(int id, int studentId, String courseName, LocalDateTime startDate, LocalDateTime endDate) {
     this.id = id;
     this.studentId = studentId;
     this.courseName = courseName;

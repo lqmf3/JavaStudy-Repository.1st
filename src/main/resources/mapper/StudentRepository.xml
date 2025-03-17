@@ -24,13 +24,12 @@
 
   <!-- 受講生の新規登録 -->
   <insert id="registerStudent" parameterType="raisetech.StudentManagement.data.Student" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO students (name, nickname, email, region, age, gender, remark, is_deleted) " +
-    "VALUES (#{name}, #{nickname}, #{email}, #{region}, #{age}, #{gender}, #{remark}, false)
+    INSERT INTO students (name, nickname, email, region, age, gender, remark, is_deleted) VALUES (#{name}, #{nickname}, #{email}, #{region}, #{age}, #{gender}, #{remark}, false)
   </insert>
 
   <!-- 受講生コース情報の新規登録 -->
   <insert id="registerStudentCourse" parameterType="raisetech.StudentManagement.data.StudentCourse" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO students_courses (student_id, course_name, start_date, end_date) " + "VALUES (#{studentId}, #{courseName}, #{startDate}, #{endDate})
+    INSERT INTO students_courses (student_id, course_name, start_date, end_date) VALUES (#{studentId}, #{courseName}, #{startDate}, #{endDate})
   </insert>
 
   <!-- 受講生の更新 -->

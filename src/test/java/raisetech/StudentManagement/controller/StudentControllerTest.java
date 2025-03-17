@@ -63,7 +63,9 @@ class StudentControllerTest {
   @Test
   void 受講生IDを指定して受講生詳細が取得できること()throws Exception{
     Student student = new Student(15,"YamadaYuka","Yuka","y_yamada@example.com",null,22,"Female"," ",false);
-    StudentCourse studentCourse = new StudentCourse(21,15," Web Development Basics","2025-02-01 17:47:43","2026-02-01");
+    LocalDateTime startDate = LocalDateTime.of(2025, 2, 1, 17, 47, 43);
+    LocalDateTime endDate = startDate.plusYears(1);
+    StudentCourse studentCourse = new StudentCourse(21, 15, "Web Development Basics", startDate, endDate);
 
     StudentDetail studentDetail = new StudentDetail(student, List.of(studentCourse));
 
