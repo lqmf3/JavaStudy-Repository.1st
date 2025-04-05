@@ -108,4 +108,57 @@ class StudentRepositoryTest {
 
     assertThat(updatedCourses.get(0).getCourseName()).isEqualTo("Advanced Web Development");
   }
+
+  @Test
+  void 指定した名前の受講生を検索できること() {
+    // データベースには「SasakiNatsu」が登録されているとする。
+    // 名前で検索
+    List<Student> result = sut.findByName("SasakiNatsu");
+
+    // 結果の検証
+    assertThat(result.size()).isEqualTo(1);
+    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
+    assertThat(result.get(0).getNickname()).isEqualTo("Natsu");
+    assertThat(result.get(0).getEmail()).isEqualTo("Natu@example.com");
+    assertThat(result.get(0).getRegion()).isEqualTo("Shizuoka");
+    assertThat(result.get(0).getAge()).isEqualTo(29);
+    assertThat(result.get(0).getGender()).isEqualTo("Male");
+    assertThat(result.get(0).getRemark()).isEqualTo(null);
+    assertThat(result.get(0).isDeleted()).isEqualTo(false);
+  }
+
+  @Test
+  void 指定した住所の受講生を検索できること() {
+    // データベースには「SasakiNatsu」が登録されているとする。
+    // 住所で検索
+    List<Student> result = sut.findByRegion("Shizuoka");
+
+    // 結果の検証
+    assertThat(result.size()).isEqualTo(1);
+    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
+    assertThat(result.get(0).getNickname()).isEqualTo("Natsu");
+    assertThat(result.get(0).getEmail()).isEqualTo("Natu@example.com");
+    assertThat(result.get(0).getRegion()).isEqualTo("Shizuoka");
+    assertThat(result.get(0).getAge()).isEqualTo(29);
+    assertThat(result.get(0).getGender()).isEqualTo("Male");
+    assertThat(result.get(0).getRemark()).isEqualTo(null);
+    assertThat(result.get(0).isDeleted()).isEqualTo(false);
+  }
+
+  @Test
+  void 年齢範囲を指定して受講生を検索できること() {
+    // 年齢範囲を指定して検索
+    List<Student> result = sut.findByAgeBetween(20, 30);
+
+    // 検索結果の検証
+    assertThat(result.size()).isEqualTo(2);
+    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
+    assertThat(result.get(1).getName()).isEqualTo("NatsukawaRimi");
+
+    // 範囲外の年齢を指定して検索（結果は空）
+    List<Student> result2 = sut.findByAgeBetween(40, 50);
+
+    // 検索結果が空であることを確認
+    assertThat(result2).isEmpty();
+  }
 }

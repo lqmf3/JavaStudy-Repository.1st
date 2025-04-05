@@ -3,10 +3,12 @@ package raisetech.StudentManagement.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LOCAL_DATE_TIME;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,19 +17,24 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 import raisetech.StudentManagement.service.StudentService;
 
 @WebMvcTest(StudentController.class)
@@ -62,11 +69,15 @@ class StudentControllerTest {
 
   @Test
   void 受講生IDを指定して受講生詳細が取得できること()throws Exception{
-    Student student = new Student(15,"YamadaYuka","Yuka","y_yamada@example.com",null,22,"Female"," ",false);
+    Student student = new Student(15, "YamadaYuka", "Yuka", "y_yamada@example.com", null, 22, "Female", " ", false);
     LocalDateTime startDate = LocalDateTime.of(2025, 2, 1, 17, 47, 43);
     LocalDateTime endDate = startDate.plusYears(1);
-    StudentCourse studentCourse = new StudentCourse(21, 15, "Web Development Basics", startDate, endDate);
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    String formattedStartDate = startDate.format(formatter);
+    String formattedEndDate = endDate.format(formatter);
+
+    StudentCourse studentCourse = new StudentCourse(21, 15, " Web Development Basics", startDate, endDate);
     StudentDetail studentDetail = new StudentDetail(student, List.of(studentCourse));
 
     when(service.getStudentDetailById(15)).thenReturn(studentDetail);
@@ -76,28 +87,28 @@ class StudentControllerTest {
         .andExpect(content().contentType("application/json"))
         .andExpect(content().json("""
             {
-                    "student": {
-                        "id": 15,
-                        "name": "YamadaYuka",
-                        "nickname": "Yuka",
-                        "email": "y_yamada@example.com",
-                        "region": null,
-                        "age": 22,
-                        "gender": "Female",
-                        "remark": " ",
-                        "deleted": false
-                    },
-                    "studentCourseList": [
-                        {
-                            "id": 21,
-                            "studentId": 15,
-                            "courseName": " Web Development Basics",
-                            "startDate": "2025-02-01 17:47:43",
-                            "endDate": "2026-02-01"
-                        }
-                    ],
+                "student": {
+                    "id": 15,
+                    "name": "YamadaYuka",
+                    "nickname": "Yuka",
+                    "email": "y_yamada@example.com",
+                    "region": null,
+                    "age": 22,
+                    "gender": "Female",
+                    "remark": " ",
                     "deleted": false
-                }"""));
+                },
+                "studentCourseList": [
+                    {
+                        "id": 21,
+                        "studentId": 15,
+                        "courseName": " Web Development Basics",
+                        "startDate": "%s",
+                        "endDate": "%s"
+                    }
+                ],
+                "deleted": false
+            }""".formatted(formattedStartDate, formattedEndDate)));
 
     verify(service, times(1)).getStudentDetailById(15);
   }
@@ -142,5 +153,122 @@ class StudentControllerTest {
             """));
 
     verify(service, times(1)).getStudentDetailById(27);
+  }
+
+
+  @Test
+  void 受講生IDを指定して受講生詳細が取得できること受講生検索が条件に基づいて正しく動作すること() throws Exception {
+    // モックデータ
+    StudentSearchCriteria criteria = new StudentSearchCriteria();
+    criteria.setName("AoyamaHaruka");
+    criteria.setRegion("Tokyo");
+
+    // モックデータを設定
+    Student student = new Student(1, "AoyamaHaruka", "Haru", "Haruka@example.com", "Tokyo", 31, "Female", "GOOD", false);
+    StudentDetail studentDetail = new StudentDetail(student, List.of());  // 空の受講履歴
+
+    // サービスメソッドのモック設定（引数にany()を使用）
+    when(service.searchStudents(any(StudentSearchCriteria.class))).thenReturn(List.of(studentDetail));
+
+    // POSTリクエストのテスト
+    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
+            .contentType("application/json")
+            .content("""
+                  {
+                      "name": "AoyamaHaruka",
+                      "region": "Tokyo"
+                  }
+                  """))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().json("""
+                  [{
+                      "student": {
+                          "id": 1,
+                          "name": "AoyamaHaruka",
+                          "nickname": "Haru",
+                          "email": "Haruka@example.com",
+                          "region": "Tokyo",
+                          "age": 31,
+                          "gender": "Female",
+                          "remark": "GOOD",
+                          "deleted": false
+                      },
+                      "studentCourseList": []
+                  }]
+              """));
+
+    // ArgumentCaptorを使って引数をキャプチャ
+    ArgumentCaptor<StudentSearchCriteria> criteriaCaptor = ArgumentCaptor.forClass(StudentSearchCriteria.class);
+    verify(service).searchStudents(criteriaCaptor.capture());
+
+    // キャプチャした引数が期待通りであることを検証
+    StudentSearchCriteria capturedCriteria = criteriaCaptor.getValue();
+    assertEquals("AoyamaHaruka", capturedCriteria.getName());
+    assertEquals("Tokyo", capturedCriteria.getRegion());
+  }
+
+
+  @Test
+  void 検索条件に一致する受講生がいない場合に空のリストが返される() throws Exception {
+    // 検索条件
+    StudentSearchCriteria criteria = new StudentSearchCriteria();
+    criteria.setName("YamadaTaro");
+    criteria.setRegion("Kumamoto");
+
+    // サービスのモック設定（該当する受講生がいない）
+    when(service.searchStudents(criteria)).thenReturn(Collections.emptyList());
+
+    // POSTリクエストのテスト（空のリストが返されることを確認）
+    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
+            .contentType("application/json")
+            .content(""" 
+                    {
+                        "name": "YamadaTaro",
+                        "region": "Kumamoto"
+                    }
+                    """))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().json("[]"));
+
+    // ArgumentCaptorを使って引数をキャプチャ
+    ArgumentCaptor<StudentSearchCriteria> criteriaCaptor = ArgumentCaptor.forClass(StudentSearchCriteria.class);
+    verify(service).searchStudents(criteriaCaptor.capture());
+
+    // キャプチャした引数が期待通りであることを検証
+    StudentSearchCriteria capturedCriteria = criteriaCaptor.getValue();
+    assertEquals("YamadaTaro", capturedCriteria.getName());
+    assertEquals("Kumamoto", capturedCriteria.getRegion());
+  }
+
+  @Test
+  void 地域指定で検索した場合に一致する受講生がいない場合に空のリストが返される() throws Exception {
+    // 検索条件
+    StudentSearchCriteria criteria = new StudentSearchCriteria();
+    criteria.setName("AoyamaHaruka");
+    criteria.setRegion("Kyoto");
+
+    // サービスのモック設定（該当する受講生がいない）
+    when(service.searchStudents(any(StudentSearchCriteria.class))).thenReturn(Collections.emptyList());
+
+    // POSTリクエストのテスト（空のリストが返されることを確認）
+    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
+            .contentType("application/json")
+            .content("""
+                    {
+                        "name": "AoyamaHaruka",
+                        "region": "Kyoto"
+                    }
+                    """))
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().json("[]"));
+
+    // 引数をキャプチャして検証
+    ArgumentCaptor<StudentSearchCriteria> captor = ArgumentCaptor.forClass(StudentSearchCriteria.class);
+    verify(service).searchStudents(captor.capture());
+
+    // キャプチャした引数が期待通りかを確認
+    StudentSearchCriteria capturedCriteria = captor.getValue();
+    assertEquals("AoyamaHaruka", capturedCriteria.getName());
+    assertEquals("Kyoto", capturedCriteria.getRegion());
   }
 }
