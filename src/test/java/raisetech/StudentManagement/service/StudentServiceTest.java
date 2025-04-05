@@ -1,6 +1,7 @@
 package raisetech.StudentManagement.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,6 +21,7 @@ import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 import raisetech.StudentManagement.repository.StudentRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,5 +134,23 @@ class StudentServiceTest {
     assertNotNull(studentCourse.getEndDate());
     LocalDateTime expectedEndDate = LocalDateTime.now().plusYears(1).toLocalDate().atStartOfDay();
     assertTrue(studentCourse.getEndDate().toLocalDate().isEqual(expectedEndDate.toLocalDate()));
+  }
+
+  @Test
+  void 受講生検索_条件が正しくリポジトリに渡されること() {
+    StudentSearchCriteria criteria = new StudentSearchCriteria();
+    criteria.setName("Taro");
+    criteria.setAgeFrom(20);
+    criteria.setAgeTo(30);
+
+    List<Student> mockStudents = new ArrayList<>();
+    when(repository.searchStudents(eq(criteria))).thenReturn(mockStudents);
+
+    List<StudentDetail> result = sut.searchStudents(criteria);
+
+    // リポジトリが正しく呼ばれていること
+    verify(repository, times(1)).searchStudents(eq(criteria));
+
+    assertEquals(mockStudents, result);
   }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.Domain.StudentDetail;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 import raisetech.StudentManagement.exception.TestException;
 import raisetech.StudentManagement.service.StudentService;
 import org.slf4j.Logger;
@@ -105,6 +106,25 @@ public class StudentController {
     }
     return ResponseEntity.ok(studentDetail);  //200
   }
+
+  /**
+   * 受講生を検索します。 検索条件に基づいて受講生情報を返します。
+   *
+   * @param criteria 検索条件
+   * @return 検索結果の受講生リスト
+   */
+  @Operation(summary = "受講生検索", description = "検索条件に基づいて受講生を検索します。")
+  @PostMapping("/students/search")
+  public ResponseEntity<List<StudentDetail>> searchStudents(@RequestBody StudentSearchCriteria criteria) {
+    List<StudentDetail> studentDetails = service.searchStudents(criteria);
+
+    if (studentDetails.isEmpty()) {
+      return ResponseEntity.ok(studentDetails);  // 空リストでも正常に返す
+    }
+
+    return ResponseEntity.ok(studentDetails);
+  }
+
 
   /**
    * 受講生詳細の更新を行います。キャンセルフラグの更新もここで行います（論理削除）
