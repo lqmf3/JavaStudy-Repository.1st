@@ -157,7 +157,7 @@ class StudentControllerTest {
 
 
   @Test
-  void 受講生IDを指定して受講生詳細が取得できること受講生検索が条件に基づいて正しく動作すること() throws Exception {
+  void 受講生検索が条件に基づいて正しく動作すること() throws Exception {
     // モックデータ
     StudentSearchCriteria criteria = new StudentSearchCriteria();
     criteria.setName("AoyamaHaruka");
@@ -170,32 +170,27 @@ class StudentControllerTest {
     // サービスメソッドのモック設定（引数にany()を使用）
     when(service.searchStudents(any(StudentSearchCriteria.class))).thenReturn(List.of(studentDetail));
 
-    // POSTリクエストのテスト
-    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
-            .contentType("application/json")
-            .content("""
-                  {
-                      "name": "AoyamaHaruka",
-                      "region": "Tokyo"
-                  }
-                  """))
+    // GETリクエストのテスト（クエリパラメータで検索条件を送る）
+    mockMvc.perform(MockMvcRequestBuilders.get("/students/search")
+            .param("name", "AoyamaHaruka")
+            .param("region", "Tokyo"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.content().json("""
-                  [{
-                      "student": {
-                          "id": 1,
-                          "name": "AoyamaHaruka",
-                          "nickname": "Haru",
-                          "email": "Haruka@example.com",
-                          "region": "Tokyo",
-                          "age": 31,
-                          "gender": "Female",
-                          "remark": "GOOD",
-                          "deleted": false
-                      },
-                      "studentCourseList": []
-                  }]
-              """));
+        .andExpect(MockMvcResultMatchers.content().json(""" 
+              [{
+                  "student": {
+                      "id": 1,
+                      "name": "AoyamaHaruka",
+                      "nickname": "Haru",
+                      "email": "Haruka@example.com",
+                      "region": "Tokyo",
+                      "age": 31,
+                      "gender": "Female",
+                      "remark": "GOOD",
+                      "deleted": false
+                  },
+                  "studentCourseList": []
+              }]
+          """));
 
     // ArgumentCaptorを使って引数をキャプチャ
     ArgumentCaptor<StudentSearchCriteria> criteriaCaptor = ArgumentCaptor.forClass(StudentSearchCriteria.class);
@@ -218,15 +213,10 @@ class StudentControllerTest {
     // サービスのモック設定（該当する受講生がいない）
     when(service.searchStudents(criteria)).thenReturn(Collections.emptyList());
 
-    // POSTリクエストのテスト（空のリストが返されることを確認）
-    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
-            .contentType("application/json")
-            .content(""" 
-                    {
-                        "name": "YamadaTaro",
-                        "region": "Kumamoto"
-                    }
-                    """))
+    // GETリクエストのテスト（空のリストが返されることを確認）
+    mockMvc.perform(MockMvcRequestBuilders.get("/students/search")
+            .param("name", "YamadaTaro")
+            .param("region", "Kumamoto"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().json("[]"));
 
@@ -241,7 +231,7 @@ class StudentControllerTest {
   }
 
   @Test
-  void 地域指定で検索した場合に一致する受講生がいない場合に空のリストが返される() throws Exception {
+  void 地域指定で検索_一致する受講生がいない場合に空のリストが返される() throws Exception {
     // 検索条件
     StudentSearchCriteria criteria = new StudentSearchCriteria();
     criteria.setName("AoyamaHaruka");
@@ -250,15 +240,10 @@ class StudentControllerTest {
     // サービスのモック設定（該当する受講生がいない）
     when(service.searchStudents(any(StudentSearchCriteria.class))).thenReturn(Collections.emptyList());
 
-    // POSTリクエストのテスト（空のリストが返されることを確認）
-    mockMvc.perform(MockMvcRequestBuilders.post("/students/search")
-            .contentType("application/json")
-            .content("""
-                    {
-                        "name": "AoyamaHaruka",
-                        "region": "Kyoto"
-                    }
-                    """))
+    // GETリクエストのテスト（空のリストが返されることを確認）
+    mockMvc.perform(MockMvcRequestBuilders.get("/students/search")
+            .param("name", "AoyamaHaruka")
+            .param("region", "Kyoto"))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.content().json("[]"));
 

@@ -12,4 +12,16 @@ public class StudentSearchCriteria {
   private Integer ageFrom; // 年齢（最小）
   private Integer ageTo; //　年齢（最大）
   private String gender;
+
+  public StudentSearchCriteria(String name, String region, Integer ageFrom, Integer ageTo, String gender) {
+    this.name = name;
+    this.region = region;
+    this.ageFrom = ageFrom;
+    this.ageTo = ageTo;
+    this.gender = gender;
+  }
+
+  public StudentSearchCriteria() {
+
+  }
 }

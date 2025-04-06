@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.data.StudentSearchCriteria;
@@ -110,12 +111,24 @@ public class StudentController {
   /**
    * 受講生を検索します。 検索条件に基づいて受講生情報を返します。
    *
-   * @param criteria 検索条件
+   * @param name
+   * @param region
+   * @param ageFrom
+   * @param ageTo
+   * @param gender
    * @return 検索結果の受講生リスト
    */
   @Operation(summary = "受講生検索", description = "検索条件に基づいて受講生を検索します。")
-  @PostMapping("/students/search")
-  public ResponseEntity<List<StudentDetail>> searchStudents(@RequestBody StudentSearchCriteria criteria) {
+  @GetMapping("/students/search")
+  public ResponseEntity<List<StudentDetail>> searchStudents(
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String region,
+      @RequestParam(required = false) Integer ageFrom,
+      @RequestParam(required = false) Integer ageTo,
+      @RequestParam(required = false) String gender) {
+
+    StudentSearchCriteria criteria = new StudentSearchCriteria(name, region, ageFrom, ageTo, gender);
+
     List<StudentDetail> studentDetails = service.searchStudents(criteria);
 
     if (studentDetails.isEmpty()) {

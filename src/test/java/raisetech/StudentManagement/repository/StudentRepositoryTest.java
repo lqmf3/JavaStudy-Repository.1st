@@ -116,15 +116,21 @@ class StudentRepositoryTest {
     List<Student> result = sut.findByName("SasakiNatsu");
 
     // 結果の検証
-    assertThat(result.size()).isEqualTo(1);
-    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
-    assertThat(result.get(0).getNickname()).isEqualTo("Natsu");
-    assertThat(result.get(0).getEmail()).isEqualTo("Natu@example.com");
-    assertThat(result.get(0).getRegion()).isEqualTo("Shizuoka");
-    assertThat(result.get(0).getAge()).isEqualTo(29);
-    assertThat(result.get(0).getGender()).isEqualTo("Male");
-    assertThat(result.get(0).getRemark()).isEqualTo(null);
-    assertThat(result.get(0).isDeleted()).isEqualTo(false);
+    assertThat(result).hasSize(1);
+
+    Student expectedStudent = new Student(
+        2,
+        "SasakiNatsu",
+        "Natsu",
+        "Natu@example.com",
+        "Shizuoka",
+        29,
+        "Male",
+        null,
+        false
+    );
+
+    assertThat(result.get(0)).isEqualTo(expectedStudent);
   }
 
   @Test
@@ -134,15 +140,23 @@ class StudentRepositoryTest {
     List<Student> result = sut.findByRegion("Shizuoka");
 
     // 結果の検証
-    assertThat(result.size()).isEqualTo(1);
-    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
-    assertThat(result.get(0).getNickname()).isEqualTo("Natsu");
-    assertThat(result.get(0).getEmail()).isEqualTo("Natu@example.com");
-    assertThat(result.get(0).getRegion()).isEqualTo("Shizuoka");
-    assertThat(result.get(0).getAge()).isEqualTo(29);
-    assertThat(result.get(0).getGender()).isEqualTo("Male");
-    assertThat(result.get(0).getRemark()).isEqualTo(null);
-    assertThat(result.get(0).isDeleted()).isEqualTo(false);
+    assertThat(result).hasSize(1);
+
+    // 比較対象となる期待する学生オブジェクト
+    Student expectedStudent = new Student(
+        2,
+        "SasakiNatsu",
+        "Natsu",
+        "Natu@example.com",
+        "Shizuoka",
+        29,
+        "Male",
+        null,
+        false
+    );
+
+    // Studentオブジェクト同士をequalsで比較
+    assertThat(result.get(0)).isEqualTo(expectedStudent);
   }
 
   @Test

@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.data.StudentCoursesStatus;
 import raisetech.StudentManagement.exception.StudentNotFoundException;
 import raisetech.StudentManagement.service.StudentCoursesStatusService;
 
 @RestController
+@RequestMapping("/courseStatus")
 public class StudentCoursesStatusController {
 
   private final StudentCoursesStatusService service;
@@ -45,7 +47,7 @@ public class StudentCoursesStatusController {
   })
 
   // 受講生コースIDに基づくコース申し込み状況を取得
-  @GetMapping("/courseStatus/{studentCourseId}")
+  @GetMapping("/{studentCourseId}")
   public ResponseEntity<?> getStudentCourseStatus(@PathVariable @Min(1) int studentCourseId) {
     List<StudentCoursesStatus> statusList = service.getStudentCourseStatusByStudentCourseId(studentCourseId);
 
@@ -66,7 +68,7 @@ public class StudentCoursesStatusController {
   }
 
   // 全ての受講生コース申し込み状況を取得するエンドポイント
-  @GetMapping("/courseStatus")
+  @GetMapping
   public ResponseEntity<List<StudentCoursesStatus>> getAllStudentCourses() {
     List<StudentCoursesStatus> allCoursesStatus = service.getAllStudentCourses();
     return ResponseEntity.ok(allCoursesStatus);
