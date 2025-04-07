@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.Domain.StudentDetail;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 import raisetech.StudentManagement.exception.TestException;
 import raisetech.StudentManagement.service.StudentService;
 import org.slf4j.Logger;
@@ -48,18 +50,36 @@ public class StudentController {
   public StudentController(StudentService service) {
 
     this.service = service;
-
   }
 
   /**
-   * 受講生詳細一覧検索です
-   * 全件検索を行うので条件指定は行いません
-   * @return　受講生詳細一覧（全件）
+   * 受講生詳細一覧検索です。
+   * 検索条件が指定されていなければ全件検索、それ以外は条件に基づいて検索します。
+   *
+   * @param name    検索条件
+   * @param region  検索条件
+   * @param ageFrom 検索条件
+   * @param ageTo   検索条件
+   * @param gender  検索条件
+   * @return 検索結果の受講生リスト（全件または条件付き）
    */
-  @Operation(summary = "一覧検索", description = "受講生の一覧を検索します。")
+  @Operation(summary = "受講生一覧検索", description = "受講生詳細の一覧を検索します。条件検索にも対応します。")
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() {
-    return service.searchStudentList();
+  public ResponseEntity<List<StudentDetail>> getStudentList(
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String region,
+      @RequestParam(required = false) Integer ageFrom,
+      @RequestParam(required = false) Integer ageTo,
+      @RequestParam(required = false) String gender) {
+
+    // 検索条件を設定
+    StudentSearchCriteria criteria = new StudentSearchCriteria(name, region, ageFrom, ageTo, gender);
+
+    // 条件に基づいて検索
+    List<StudentDetail> studentDetails = service.searchStudents(criteria);
+
+    // 結果が空でもOK（空リストで正常返却）
+    return ResponseEntity.ok(studentDetails);
   }
 
   /**

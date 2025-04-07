@@ -2,6 +2,7 @@ package raisetech.StudentManagement.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import raisetech.StudentManagement.Domain.StudentDetail;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 import raisetech.StudentManagement.repository.StudentRepository;
 
 /**
@@ -87,4 +89,20 @@ public class StudentService {
       repository.updateStudent(studentDetail.getStudent());
       studentDetail.getStudentCourseList().forEach(repository::updateStudentCourse);
     }
+
+  /**
+   * 検索条件を指定して受講生を検索
+   * @param criteria
+   * @return
+   */
+  public List<StudentDetail> searchStudents(StudentSearchCriteria criteria) {
+    List<Student> students = repository.searchStudents(criteria);
+    List<StudentDetail> studentDetails = students.stream()
+        .map(student -> {
+          List<StudentCourse> courses = repository.findCourseByStudentId(student.getId());
+          return new StudentDetail(student, courses); // StudentDetailに変換
+        })
+        .collect(Collectors.toList());
+    return studentDetails;
   }
+}

@@ -108,4 +108,71 @@ class StudentRepositoryTest {
 
     assertThat(updatedCourses.get(0).getCourseName()).isEqualTo("Advanced Web Development");
   }
+
+  @Test
+  void 指定した名前の受講生を検索できること() {
+    // データベースには「SasakiNatsu」が登録されているとする。
+    // 名前で検索
+    List<Student> result = sut.findByName("SasakiNatsu");
+
+    // 結果の検証
+    assertThat(result).hasSize(1);
+
+    Student expectedStudent = new Student(
+        2,
+        "SasakiNatsu",
+        "Natsu",
+        "Natu@example.com",
+        "Shizuoka",
+        29,
+        "Male",
+        null,
+        false
+    );
+
+    assertThat(result.get(0)).isEqualTo(expectedStudent);
+  }
+
+  @Test
+  void 指定した住所の受講生を検索できること() {
+    // データベースには「SasakiNatsu」が登録されているとする。
+    // 住所で検索
+    List<Student> result = sut.findByRegion("Shizuoka");
+
+    // 結果の検証
+    assertThat(result).hasSize(1);
+
+    // 比較対象となる期待する学生オブジェクト
+    Student expectedStudent = new Student(
+        2,
+        "SasakiNatsu",
+        "Natsu",
+        "Natu@example.com",
+        "Shizuoka",
+        29,
+        "Male",
+        null,
+        false
+    );
+
+    // Studentオブジェクト同士をequalsで比較
+    assertThat(result.get(0)).isEqualTo(expectedStudent);
+  }
+
+  @Test
+  void 年齢範囲を指定して受講生を検索できること() {
+    // 年齢範囲を指定して検索
+    List<Student> result = sut.findByAgeBetween(20, 30);
+
+    // 検索結果の検証
+    assertThat(result.size()).isEqualTo(2);
+    assertThat(result.get(0).getName()).isEqualTo("SasakiNatsu");
+    assertThat(result.get(1).getName()).isEqualTo("NatsukawaRimi");
+
+    // 範囲外の年齢を指定して検索（結果は空）
+    List<Student> result2 = sut.findByAgeBetween(40, 50);
+
+    // 検索結果が空であることを確認
+    assertThat(result2).isEmpty();
+  }
 }

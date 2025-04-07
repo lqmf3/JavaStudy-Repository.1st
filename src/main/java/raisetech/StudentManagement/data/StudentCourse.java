@@ -2,6 +2,7 @@ package raisetech.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,5 +26,22 @@ public class StudentCourse {
   }
 
   public StudentCourse(){
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    StudentCourse that = (StudentCourse) o;
+    return id == that.id &&
+           studentId == that.studentId &&
+           Objects.equals(courseName, that.courseName) &&
+           Objects.equals(startDate, that.startDate) &&
+           Objects.equals(endDate, that.endDate);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, studentId, courseName, startDate, endDate);
   }
 }

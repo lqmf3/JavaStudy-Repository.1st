@@ -6,9 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.annotations.Update;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
+import raisetech.StudentManagement.data.StudentSearchCriteria;
 
 /**
  * 受講生テーブルと受講生コース情報と紐づけるRepositoryです
@@ -67,4 +69,24 @@ public interface StudentRepository {
    */
   void updateStudentCourse(StudentCourse course);
   void markStudentAsDeleted(@Param("id")int id);//論理削除処理
+
+  // 動的SQLを使用して、受講生を検索
+  @SelectProvider(type = StudentSqlProvider.class, method = "buildSearchQuery")
+  List<Student> searchStudents(@Param("criteria") StudentSearchCriteria criteria);
+
+  // 指定した名前の受講生を検索するメソッド
+  @Select("SELECT * FROM students WHERE name = #{name}")
+  List<Student> findByName(String name);
+
+  // 指定した住所の受講生を検索するメソッド
+  @Select("SELECT * FROM students WHERE region = #{region}")
+  List<Student> findByRegion(String region);
+
+  // 〇～〇歳までの受講生を検索するメソッド
+  @Select("SELECT * FROM students WHERE age BETWEEN #{ageFrom} AND #{ageTo}")
+  List<Student> findByAgeBetween(int ageFrom, int ageTo);
+
+  // 指定した性別の受講生を検索するメソッド
+  @Select("SELECT * FROM students WHERE gender = #{gender}")
+  List<Student> findByGender(String gender);
 }
